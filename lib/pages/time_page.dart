@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/time.dart';
+import '../models/titulo.dart';
+import 'add_titulo.page.dart';
 
 class TimePage extends StatefulWidget {
   Time time;
@@ -9,7 +11,24 @@ class TimePage extends StatefulWidget {
   State<TimePage> createState() => _TimePageState();
 }
 
+
+
 class _TimePageState extends State<TimePage> {
+  titulopage(){
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => AddTituloPage(time: widget.time, onSave: this.addTitulo),),
+    );
+  }
+
+  addTitulo(Titulo titulo){
+      setState(() {
+        widget.time.titulos.add(titulo);
+      });
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Slavo com sucesso!'),),);
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -18,6 +37,10 @@ class _TimePageState extends State<TimePage> {
         appBar: AppBar(
           backgroundColor: widget.time.cor,
           title: Text(widget.time.nome),
+          actions: [
+            IconButton(onPressed: titulopage,
+                icon: Icon(Icons.add))
+          ],
           bottom: TabBar(
             tabs: [
               Tab(
@@ -46,10 +69,29 @@ class _TimePageState extends State<TimePage> {
                 ),),
               ],
             ),
-            Container(),
+            titulos(),
           ],
         ),
       ),
+    );
+  }
+  Widget titulos(){
+    final quantidade = widget.time.titulos.length;
+
+    return quantidade == 0
+        ? Container(
+        child: Center(child: Text('Nenhum titulo ainda')),
+    )
+        : ListView.separated(
+        itemBuilder: (BuildContext context, int index){
+          return ListTile(
+            leading:Icon(Icons.emoji_events),
+            title: Text(widget.time.titulos[index].campeonato),
+            trailing: Text(widget.time.titulos[index].ano),
+          );
+        },
+      separatorBuilder: (_,__) => Divider(),
+      itemCount: quantidade,
     );
   }
 }
