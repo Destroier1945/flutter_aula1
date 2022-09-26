@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_aula1/repositories/times_repository.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
 
 void main(){
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => TimesRepostory(),
+      child: MyApp(),
+    ),
+      );
 }
 
 class MyApp extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_aula1/repositories/times_repository.dart';
+import 'package:provider/provider.dart';
 import '../models/time.dart';
-import '../models/titulo.dart';
 import 'add_titulo.page.dart';
 
 class TimePage extends StatefulWidget {
@@ -17,18 +18,10 @@ class _TimePageState extends State<TimePage> {
   titulopage(){
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => AddTituloPage(time: widget.time, onSave: this.addTitulo),),
+        MaterialPageRoute(builder: (_) => AddTituloPage(time: widget.time),),
     );
   }
 
-  addTitulo(Titulo titulo){
-      setState(() {
-        widget.time.titulos.add(titulo);
-      });
-      Navigator.pop(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Slavo com sucesso!'),),);
-  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -76,7 +69,11 @@ class _TimePageState extends State<TimePage> {
     );
   }
   Widget titulos(){
-    final quantidade = widget.time.titulos.length;
+
+    final time = Provider.of<TimesRepostory>(context)
+        .times
+        .firstWhere((t)=> t.nome == widget.time.nome);
+    final quantidade = time.titulos.length;
 
     return quantidade == 0
         ? Container(
@@ -90,7 +87,7 @@ class _TimePageState extends State<TimePage> {
             trailing: Text(widget.time.titulos[index].ano),
           );
         },
-      separatorBuilder: (_,__) => Divider(),
+        separatorBuilder: (_,__) => Divider(),
       itemCount: quantidade,
     );
   }

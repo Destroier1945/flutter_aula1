@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_aula1/models/time.dart';
+import 'package:flutter_aula1/repositories/times_repository.dart';
+import 'package:provider/provider.dart';
 import '../models/titulo.dart';
 
 class AddTituloPage extends StatefulWidget {
   Time time;
-  ValueChanged<Titulo> onSave;
-  AddTituloPage({Key? key,required this.time,required this.onSave}) : super(key: key);
+  AddTituloPage({Key? key,required this.time}) : super(key: key);
 
   @override
   State<AddTituloPage> createState() => _AddTituloPageState();
@@ -15,6 +16,16 @@ class _AddTituloPageState extends State<AddTituloPage> {
   final _campeonato =TextEditingController();
   final _ano = TextEditingController();
   final _formkey = GlobalKey<FormState>();
+
+  save(){
+    
+    Provider.of<TimesRepostory>(context, listen: false).addTitulo(time: widget.time,
+        titulo: Titulo(campeonato: _campeonato.text, ano: _ano.text),);
+
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Slavo com sucesso!'),),);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +77,8 @@ class _AddTituloPageState extends State<AddTituloPage> {
               child: ElevatedButton(
                 onPressed: (){
                   if(_formkey.currentState!.validate()){
-                    widget.onSave(
-                      Titulo(campeonato: _campeonato.text, ano: _ano.text),
-                    );
+                    save();
+
                   }
                 },
                 child: Row(
